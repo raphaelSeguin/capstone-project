@@ -1,0 +1,9 @@
+body {
+    font-family: 'Gaegu', cursive;
+}
+
+.jumbotron {
+    /* background-image: url("./back.png");
+    background-size: cover; */
+    background-color: rgba(0, 0, 255, 0.2);
+}
