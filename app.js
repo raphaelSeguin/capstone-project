@@ -4,15 +4,45 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const mongoose = require('mongoose');
+const config = process.env.PRODUCTION ? {
+  oauth: {
+      github: {
+          id: process.env.OAUTH_GITHUB_ID,
+          secret: process.env.OAUTH_GITHUB_SECRET
+      },
+      facebook: {
+          id: process.env.OAUTH_FACEBOOK_ID,
+          secret: process.env.OAUTH_FACEBOOK_SECRET
+      }
+  },
+  db: {
+      url: process.env.DB_URL
+  },
+  api: {
+      
+  }
+}
+: require('./config');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+// db connection
+mongoose.connect(config.db.url);
+const db = mongoose.connection;
+db.on('err', err => {
+  console.log('\nError: database connection failed\n', err)
+})
+db.once('open', function() {
+  console.log('connected successfully');
+
+});
+
+// express app
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
+// middleware 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
